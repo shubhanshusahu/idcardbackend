@@ -3,8 +3,39 @@ const db = require('./server/database')
 const app = express();
 const { Leads } = require('./api/routes/Leads')
 // import bodyParser from 'body-parser';
-const bodyParser = require('body-parser')
 
+const bodyParser = require('body-parser')
+app.use(express.json());
+const cors = require('cors');
+const multer = require("multer")
+app.use(cors({
+    origin: ['https://www.section.io', 'https://www.google.com/']
+}));
+
+// image config
+var imgconfig =multer.diskStorage({
+    destination:(req,file,callback)=>{
+        callback(null,"./uploads")
+    },
+        filename:(req,file,callback)=>{
+            callback(null,`image-${file.originalname}`)
+        }
+})
+// image filter
+const isimage = (req,file,callback)=>{
+    if(file.mimetype.startsWith("image")){
+        callback(null,true)
+    }
+    else{
+        callback(null,Error("Only images are allowed!"))
+    }
+}
+
+//image upload 
+var upload =multer ({
+    storage :imgconfig,
+    fileFilter:isimage
+})
 // app.use('/',(req,res,next)=>{
 
 //     db.query(`select * from Leads`, (err, results, fields) => {
@@ -111,31 +142,46 @@ app.get('/leadsbytext', (req, res) => {
     })
    
 })
-app.post('/leads', (req, res) => {
+app.post('/student',upload.single("photo"), (req, res) => {
 
     console.log(req.body)
+    const {data} = req.body;
+    const {filename} = req.file
+
+    if(!filename || !data){
+        res.status(422).json({status:   422,message:"fill all the details!"})
+    }
+
+    try{
+        db.query(`insert into student (instituteid,studname,rollno,enrollno,class,section,
+                    father_name,mother_name,blood_group,dob,address,pincode,gender,contactno,pic) 
+                    values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`,
+                    [...JSON.parse(data),filename],
+                      (err, results, fields) => {
+                if (err) {
+                    return console.log(err)
+                }
+                else{
+                    res.status(201).json({status:201,message:"Successfully submitted!!!",data : results })
+                }
+            })
+    }catch(e){
+        res.status(422).json({status: 422,e})
+    }
+
     // res.send(req.body)
-    db.query(`insert into leads (PlanId,AgentId,ApplicantName,APhone,ALocation,CreatedDate) values (?,?,?,?,?,?)`, Object.values(req.body), (err, results, fields) => {
-        if (err) {
-            return console.log(err)
-
-        }
+    // db.query(`insert into student (instituteid,studname,rollno,enrollno,class,section,
+    //         father_name,mother_name,blood_group,dob,address,pincode,pic,gender,contactno) 
+    //         values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`, Object.values(req.body), (err, results, fields) => {
+    //     if (err) {
+    //         return console.log(err)
+    //     }
+    //     return res.send(req.body.data);
         
-        return res.send(results);
-        // db.query(`update Agents set Wallet = Wallet + 50 where Phone = ? `, req.body.AgentId, (err, results, fields) => {
-        //     if (err) {
-        //         return console.log(err)
-    
-        //     }
-        //     console.log('Inserted 1 row', req.body.AgentId, results)
-            
+    // })
 
-        // })
-        
-    })
-
-
-    console.log('Inserted 1 row', req.body.AgentId)
+    // res.send(req.body.data);
+    // console.log('Inserted 1 photo', JSON.stringify(req.body.data))
 })
 
 app.delete('/leads', (req, res) => {
