@@ -18,7 +18,7 @@ var imgconfig =multer.diskStorage({
         callback(null,"./uploads")
     },
         filename:(req,file,callback)=>{
-            callback(null,`image-${file.originalname}`)
+            callback(null,`image-${Date.now()}.${file.originalname}`)
         }
 })
 // image filter
@@ -79,14 +79,14 @@ app.get('/leads', (req, res) => {
 })
 
 
-app.get('/leadsbydate', (req, res) => {
-    const {dat} =req.query;
+app.get('/schools', (req, res) => {
+    // const {dat} =req.query;
 
-    db.query(`select * from leads where DATE(CreatedDate) = ? order by LeadId DESC`,[dat], async (err, results, fields) => {
+    db.query(`select * from Schools`, async (err, results, fields) => {
         if (err) {
             return console.log(err)
         }
-        console.log('show leads by date',dat,results)
+        console.log('show all schools',results)
         return res.send(results);
     })
    
