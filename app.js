@@ -17,6 +17,7 @@ app.use((req, res, next) => {
     res.setHeader("Access-Control-Allow-Headers", "Content-Type");
     next();
   })
+  app.use('/uploads',express.static("./uploads"))
 // image config
 var imgconfig =multer.diskStorage({
     destination:(req,file,callback)=>{
@@ -39,6 +40,7 @@ const isimage = (req,file,callback)=>{
 //image upload 
 var upload =multer ({
     storage :imgconfig,
+    limits: {fileSize:'2000000'},
     fileFilter:isimage
 })
 // app.use('/',(req,res,next)=>{
