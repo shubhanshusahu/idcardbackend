@@ -98,6 +98,18 @@ app.get('/schools', (req, res) => {
     })
    
 })
+app.get('/teachers', (req, res) => {
+    // const {dat} =req.query;
+
+    db.query(`select * from user  where userrole ='teacher'`, async (err, results, fields) => {
+        if (err) {
+            return console.log(err)
+        }
+        console.log('show all teachers',results)
+        return res.send(results);
+    })
+   
+})
 app.get('/students', (req, res) => {
     const {dat} =req.query;
 
@@ -212,6 +224,16 @@ app.post('/school', (req, res) => {
         return res.send(results);
     })
     console.log('School Account Created')
+})
+app.post('/teacher', (req, res) => {
+    console.log(req.body)
+    db.query(`insert into user (username,usermail,userphone,userpass,userrole,schoolid) values (?,?,?,?,'teacher',?)`, Object.values(req.body), (err, results, fields) => {
+        if (err) {
+            return console.log(err)
+        }
+        return res.send(results);
+    })
+    console.log('Teacher Account Created')
 })
 
 app.post('/agent', (req, res) => {
