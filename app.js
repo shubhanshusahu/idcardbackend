@@ -203,6 +203,16 @@ app.delete('/leads', (req, res) => {
     console.log('Deleted leads')
 })
 ////////////////////////////////////////////
+app.post('/school', (req, res) => {
+    console.log(req.body)
+    db.query(`insert into Schools (SchoolRedgNo,SchoolnName,SchoolAddress) values (?,?,?)`, Object.values(req.body), (err, results, fields) => {
+        if (err) {
+            return console.log(err)
+        }
+        return res.send(results);
+    })
+    console.log('School Account Created')
+})
 
 app.post('/agent', (req, res) => {
     console.log(req.body)
