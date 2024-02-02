@@ -249,7 +249,7 @@ app.post('/agent', (req, res) => {
 
 app.post('/login', (req, res) => {
     console.log(req.body)
-    db.query(`select * from Agents where Phone =? and Password = ? `, Object.values(req.body), (err, results, fields) => {
+    db.query(`select * from user where usermail =? and userpass = ? `, Object.values(req.body), (err, results, fields) => {
         if (err) {
             return console.log(err)
         }
