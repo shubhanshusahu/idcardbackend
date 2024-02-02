@@ -111,25 +111,39 @@ app.get('/teachers', (req, res) => {
    
 })
 app.get('/students', (req, res) => {
-    const {dat} =req.query;
+    const {schoolid} =req.query;
 
-    db.query(`select * from student`, async (err, results, fields) => {
+    db.query(`select * from student where instituteid =?`,[schoolid], async (err, results, fields) => {
         if (err) {
             return console.log(err)
         }
-        console.log('students',dat,results)
+        console.log('students',schoolid,results)
         return res.send(results);
     })
    
 })
-app.get('/leadsbystatus', (req, res) => {
-    const {status} =req.query;
 
-    db.query(`select * from leads where Status = ? order by LeadId DESC`,[status], async (err, results, fields) => {
+app.get('/studentsbyschoolid', (req, res) => {
+    const {schoolid,clas} =req.query;
+
+    db.query(`select * from student where instituteid =? and class =?`,[schoolid,clas], async (err, results, fields) => {
         if (err) {
             return console.log(err)
         }
-        console.log('show leads by status',status,results)
+        console.log('students',schoolid,results)
+        return res.send(results);
+    })
+   
+})
+
+app.get('/school', (req, res) => {
+    const {idSchool} =req.query;
+
+    db.query(`select * from Schools where idSchool = ?`,[idSchool], async (err, results, fields) => {
+        if (err) {
+            return console.log(err)
+        }
+        console.log('show leads by status',idSchool,results)
         return res.send(results);
     })
    
