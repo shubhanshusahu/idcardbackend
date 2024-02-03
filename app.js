@@ -6,17 +6,19 @@ const { Leads } = require('./api/routes/Leads')
 
 const bodyParser = require('body-parser')
 app.use(express.json());
-const cors = require('cors');
+// const cors = require('cors');
 const multer = require("multer")
-app.use(cors({
-    origin: ['https://www.section.io', 'https://www.google.com/']
-}));
+// app.use(cors());
 app.use((req, res, next) => {
     res.setHeader("Access-Control-Allow-Origin", "*");
-    res.setHeader("Access-Control-Allow-Methods", "POST, GET, PUT");
-    res.setHeader("Access-Control-Allow-Headers", "Content-Type");
+    res.setHeader("Access-Control-Allow-Credentials", "true");
+    res.setHeader("Access-Control-Allow-Methods", "GET,HEAD,OPTIONS,POST,PUT");
+    res.setHeader("Access-Control-Allow-Headers", "Access-Control-Allow-Headers, Origin,Accept, X-Requested-With, Content-Type, Access-Control-Request-Method, Access-Control-Request-Headers");
     next();
   })
+
+
+  
   app.use('/uploads',express.static("./uploads"))
 // image config
 var imgconfig =multer.diskStorage({
@@ -267,7 +269,7 @@ app.post('/login', (req, res) => {
         if (err) {
             return console.log(err)
         }
-        console.log(results)
+        console.log(Object.values(req.body),'body recd')
         return res.send(results);
     })
     console.log('login api called')
