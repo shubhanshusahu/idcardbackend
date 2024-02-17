@@ -88,6 +88,7 @@ app.get('/leads', (req, res) => {
 })
 
 
+
 app.get('/schools', (req, res) => {
     // const {dat} =req.query;
 
@@ -124,7 +125,18 @@ app.get('/students', (req, res) => {
     })
    
 })
+app.get('/student', (req, res) => {
+    const {idstudent} =req.query;
 
+    db.query(`select * from student where idstudent =?`,[idstudent], async (err, results, fields) => {
+        if (err) {
+            return console.log(err)
+        }
+        console.log('idstudent',idstudent)
+        return res.send(results);
+    })
+   
+})
 app.get('/studentsbyschoolid', (req, res) => {
     const {schoolid,clas} =req.query;
 
@@ -285,14 +297,14 @@ app.get('/agents', (req, res) => {
     })
     console.log('show agents')
 })
-app.put('/leads', (req, res) => {
-    console.log(req.body)
-    db.query(`update leads set status = ? where LeadId = ? `, [req.body.Status,req.body.LeadId], (err, results, fields) => {
+app.delete('/student', (req, res) => {
+    const {idstudent} =req.query;
+    db.query(`delete from student where idstudent = ?`,idstudent, (err, results, fields) => {
         if (err) {
             return console.log(err)
 
         }
-        console.log('Updated status', req.body.Status, results)
+        console.log('Student deleted',idstudent)
         return res.send(results);
 
     })
