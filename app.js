@@ -357,17 +357,45 @@ app.get('/upiid', (req, res) => {
     })
    
 })
-app.put('/upiid', (req, res) => {
+app.put('/student', (req, res) => {
 
-    const {phone,UPIid} =req.query
+    const {idstudent} =req.query
+    db.query(`update student set instituteid=?,studname=?,rollno=?,enrollno=?,class=?,section=?,
+        father_name=?,mother_name=?,blood_group=?,dob=?,address=?,pincode=?,gender=?,contactno=? where idstudent =?`,
+      [
+        req.body.instituteid,
+        req.body.studname,
+        req.body.rollno,
+        req.body.enrollno,
+        req.body.class,
+        req.body.section,
+        req.body.father_name,
+        req.body.mother_name,
+        req.body.blood_group,
+        req.body.dob,
+        req.body.address,
+        req.body.pincode,
+        req.body.gender,
+        req.body.contactno,
+        idstudent,
 
-    db.query(`update Agents set UPIid = ? where  phone = ?;`,[UPIid, phone],async (err, results, fields) => {
-        if (err) {
-            return console.log(err)
-        }
-        console.log('get upi id ',results)
-        return res.send(results);
-    })
+      ],
+          (err, results, fields) => {
+    if (err) {
+        return console.log(err)
+    }
+    else{
+        res.status(201).json({status:201,message:"Updated submitted!!!",data : results })
+    }
+})
+
+    // db.query(`update student set UPIid = ? where  phone = ?;`,[UPIid, phone],async (err, results, fields) => {
+    //     if (err) {
+    //         return console.log(err)
+    //     }
+    //     console.log('get upi id ',results)
+    //     return res.send(results);
+    // })
    
 })
 module.exports = app;
