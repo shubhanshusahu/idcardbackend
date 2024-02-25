@@ -189,6 +189,29 @@ app.get('/leadsbytext', (req, res) => {
     })
    
 })
+app.put('/studentPhoto',upload.single("photo"), (req, res) => {
+    console.log(req.body)
+    const {data} = req.body;
+    const {filename} = req.file
+
+    if(!filename){
+        res.status(422).json({status:   422,message:"fill all the details!"})
+    }
+    try{
+        db.query(`update student set pic = ? where idstudent =?`,
+                    [filename,JSON.parse(data).idstudent],
+                      (err, results, fields) => {
+                if (err) {
+                    return console.log(err)
+                }
+                else{
+                    res.status(201).json({status:201,message:"Successfully Updated!!!",data : results })
+                }
+            })
+    }catch(e){
+        res.status(422).json({status: 422,e})
+    }
+})
 app.post('/student',upload.single("photo"), (req, res) => {
 
     console.log(req.body)
@@ -320,8 +343,18 @@ app.post('/leadstatus', (req, res) => {
     })
     console.log('get lead status')
 })
-app.get('/admindashboard', (req, res) => {
-    db.query(`select Status,count(Status) as Total from leads group by Status`, async (err, results, fields) => {
+app.post('/importexcel', (req, res) => {
+    // (instituteid,studname,rollno,enrollno,class,section,
+    //     father_name,mother_name,blood_group,dob,address,pincode,gender,contactno,pic) 
+    let val = req.body
+    let keys =Object.keys(val[0])
+    let transformToarr = val.map(r=> Object.values(r))
+    console.log(keys,'keys excel')
+    let insquery =`insert into student (${keys})`
+    console.log(insquery.replace(/['‘’"“”]/g, ''));
+    console.log(transformToarr,'transformed excel')
+    db.query(`${insquery.replace(/['‘’"“”]/g, '')} values ?`,
+    [transformToarr], async (err, results, fields) => {
         if (err) {
             return console.log(err)
         }
@@ -361,7 +394,7 @@ app.put('/student', (req, res) => {
 
     const {idstudent} =req.query
     db.query(`update student set instituteid=?,studname=?,rollno=?,enrollno=?,class=?,section=?,
-        father_name=?,mother_name=?,blood_group=?,dob=?,address=?,pincode=?,gender=?,contactno=? where idstudent =?`,
+        father_name=?,mother_name=?,blood_group=?,address=?,pincode=?,gender=?,contactno=? where idstudent =?`,
       [
         req.body.instituteid,
         req.body.studname,
@@ -372,7 +405,7 @@ app.put('/student', (req, res) => {
         req.body.father_name,
         req.body.mother_name,
         req.body.blood_group,
-        req.body.dob,
+        // req.body.dob,
         req.body.address,
         req.body.pincode,
         req.body.gender,
