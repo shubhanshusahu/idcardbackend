@@ -1,10 +1,10 @@
 const { createPool } = require('mysql');
 const pool = createPool({
-    host: 'blxgrcztywgalnqwbvsn-mysql.services.clever-cloud.com',
-    user: 'u6xgd67fhqnbcamt',
-    password: 'u1hOJRUnTHnp3bp12Lf1',
-    database: 'blxgrcztywgalnqwbvsn',
-    connectionLimit: 10,
+    host: '88.99.105.11',
+    user: 'alfaxsol_shubhanshu',
+    password: 'alphaX2024',
+    database: 'alfaxsol_idcard',
+    connectionLimit: 1000,
 })
 pool.query('select * from Schools', (err, results, fields) => {
     if (err) {
