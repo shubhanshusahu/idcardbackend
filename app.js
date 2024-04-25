@@ -6,9 +6,24 @@ const { Leads } = require('./api/routes/Leads')
 
 const bodyParser = require('body-parser')
 app.use(express.json());
-// const cors = require('cors');
+const cors = require('cors');
+// app.use(cors({origin: true, credentials: true}));
+// const corsOptions = {
+//   origin: "*",
+//   methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
+//   credentials: true,
+//   optionsSuccessStatus: 204,
+// };
+
+// app.use(cors(corsOptions));
 const multer = require("multer")
-// app.use(cors());
+app.use(cors());
+// app.use(function(req, res, next) {
+//     res.header("Access-Control-Allow-Origin", "*");
+//     res.header('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
+//     res.header("Access-Control-Allow-Headers", "x-access-token, Origin, X-Requested-With, Content-Type, Accept");
+//     next();
+//   });
 app.use((req, res, next) => {
     res.setHeader("Access-Control-Allow-Origin", "*");
     res.setHeader("Access-Control-Allow-Credentials", "true");
@@ -394,7 +409,7 @@ app.put('/student', (req, res) => {
 
     const {idstudent} =req.query
     db.query(`update student set instituteid=?,studname=?,rollno=?,enrollno=?,class=?,section=?,
-        father_name=?,mother_name=?,blood_group=?,address=?,pincode=?,gender=?,contactno=? where idstudent =?`,
+        father_name=?,mother_name=?,blood_group=?,dob =?,address=?,pincode=?,gender=?,contactno=? where idstudent =?`,
       [
         req.body.instituteid,
         req.body.studname,
@@ -405,7 +420,7 @@ app.put('/student', (req, res) => {
         req.body.father_name,
         req.body.mother_name,
         req.body.blood_group,
-        // req.body.dob,
+        req.body.dob,
         req.body.address,
         req.body.pincode,
         req.body.gender,
@@ -415,7 +430,8 @@ app.put('/student', (req, res) => {
       ],
           (err, results, fields) => {
     if (err) {
-        return console.log(err)
+         console.log(err)
+         res.status(400).json({status:400,message:err.message, data : err })
     }
     else{
         res.status(201).json({status:201,message:"Updated submitted!!!",data : results })
