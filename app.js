@@ -17,6 +17,7 @@ const cors = require('cors');
 
 // app.use(cors(corsOptions));
 const multer = require("multer")
+app.use(bodyParser.urlencoded({ extended: true, limit: '10mb' }));
 app.use(cors());
 // app.use(function(req, res, next) {
 //     res.header("Access-Control-Allow-Origin", "*");
