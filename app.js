@@ -2,8 +2,7 @@ const express = require('express')
 const db = require('./server/database')
 const app = express();
 const { Leads } = require('./api/routes/Leads')
-// import bodyParser from 'body-parser';
-
+var busboy = require('connect-busboy');
 const bodyParser = require('body-parser')
 app.use(express.json());
 const cors = require('cors');
@@ -17,6 +16,8 @@ const cors = require('cors');
 
 // app.use(cors(corsOptions));
 const multer = require("multer")
+app.use(bodyParser.urlencoded({ extended: true, limit: '10mb' }));
+app.use(busboy());
 app.use(cors());
 // app.use(function(req, res, next) {
 //     res.header("Access-Control-Allow-Origin", "*");
@@ -204,17 +205,16 @@ app.get('/leadsbytext', (req, res) => {
     })
    
 })
-app.put('/studentPhoto',upload.single("photo"), (req, res) => {
+app.put('/studentPhoto', (req, res) => {
     console.log(req.body)
-    const {data} = req.body;
-    const {filename} = req.file
+    const {idstudent,pic} = req.body;
 
-    if(!filename){
-        res.status(422).json({status:   422,message:"fill all the details!"})
-    }
+    // if(!filename){
+    //     res.status(422).json({status:   422,message:"fill all the details!"})
+    // }
     try{
         db.query(`update student set pic = ? where idstudent =?`,
-                    [filename,JSON.parse(data).idstudent],
+                    [pic,idstudent],
                       (err, results, fields) => {
                 if (err) {
                     return console.log(err)
@@ -239,9 +239,9 @@ app.post('/student',upload.single("photo"), (req, res) => {
 
     try{
         db.query(`insert into student (instituteid,studname,rollno,enrollno,class,section,
-                    father_name,mother_name,blood_group,dob,address,pincode,gender,contactno,pic) 
-                    values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`,
-                    [...JSON.parse(data),filename],
+                    father_name,mother_name,blood_group,dob,address,pincode,gender,contactno,pic,housecolor,stream) 
+                    values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`,
+                    [...JSON.parse(data)],
                       (err, results, fields) => {
                 if (err) {
                     return console.log(err)
