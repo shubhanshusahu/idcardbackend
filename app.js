@@ -233,7 +233,7 @@ app.post('/student', (req, res) => {
     const {data} = req.body;
     // const {filename} = req.file
 
-    if(!filename || !data){
+    if(!data){
         res.status(422).json({status:   422,message:"fill all the details!"})
     }
 
@@ -244,7 +244,7 @@ app.post('/student', (req, res) => {
                     [...JSON.parse(data)],
                       (err, results, fields) => {
                 if (err) {
-                    return console.log(err)
+                    res.status(422).json({status: 422,err})
                 }
                 else{
                     res.status(201).json({status:201,message:"Successfully submitted!!!",data : results })
