@@ -227,11 +227,11 @@ app.put('/studentPhoto', (req, res) => {
         res.status(422).json({status: 422,e})
     }
 })
-app.post('/student',upload.single("photo"), (req, res) => {
+app.post('/student', (req, res) => {
 
     console.log(req.body)
     const {data} = req.body;
-    const {filename} = req.file
+    // const {filename} = req.file
 
     if(!filename || !data){
         res.status(422).json({status:   422,message:"fill all the details!"})
