@@ -229,21 +229,23 @@ app.put('/studentPhoto', (req, res) => {
 })
 app.post('/student', (req, res) => {
 
-    console.log(req.body)
-    const {data} = req.body;
+    console.log(req.body,'req.body recd')
+    const data = req.body;
     // const {filename} = req.file
 
-    if(!data){
-        res.status(422).json({status:   422,message:"fill all the details!"})
-    }
+    // if(!data){
+    //     res.status(422).json({status:   422,message:"fill all the details!"})
+    // }
 
     try{
+        console.log(data,'data received')
         db.query(`insert into student (instituteid,studname,rollno,enrollno,class,section,
                     father_name,mother_name,blood_group,dob,address,pincode,gender,contactno,pic,housecolor,stream) 
                     values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`,
-                    [...JSON.parse(data)],
+                    [...Object.values(req.body)],
                       (err, results, fields) => {
                 if (err) {
+                    console.log(err)
                     res.status(422).json({status: 422,err})
                 }
                 else{
